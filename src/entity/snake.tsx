@@ -37,6 +37,7 @@ class Snake {
         .add(this.direction.copy().scalarMult(index * params.stepSize))
       this.positions.push(newPosition)
     }
+    this.positions.reverse()
   }
 
   public getWidth(): number {
@@ -45,6 +46,10 @@ class Snake {
 
   public getDirection(): Vector {
     return this.direction
+  }
+
+  public getRawDirection(): Vector {
+    return this.positions[0].copy().sub(this.positions[1]).normalize()
   }
 
   public getPositions(): Vector[] {

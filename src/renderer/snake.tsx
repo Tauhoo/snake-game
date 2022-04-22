@@ -46,14 +46,6 @@ class SnakeRenderer {
   }
 
   public render() {
-    const positions = this.snake.getPositions()
-    if (positions.length !== this.meshes.length) {
-      console.log(
-        positions.length,
-        this.meshes.length,
-        positions.length > this.meshes.length
-      )
-    }
     this.updateMeshes()
   }
 }
