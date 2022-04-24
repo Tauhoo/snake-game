@@ -6155,6 +6155,11 @@
     "prelude-ls" "~1.1.2"
     "type-check" "~0.3.2"
 
+"lil-gui@^0.16.1":
+  "integrity" "sha512-6wnnfBvQxJYRhdLyIA+w5b8utwbuVxNmtpTXElm36OSgHa8lyKp00Xz/4AEx3kvodT0AJYgbfadCFWAM0Q8DgQ=="
+  "resolved" "https://registry.npmjs.org/lil-gui/-/lil-gui-0.16.1.tgz"
+  "version" "0.16.1"
+
 "lilconfig@^2.0.3", "lilconfig@^2.0.5":
   "integrity" "sha512-xaYmXZtTHPAw5m+xLN8ab9C+3a8YmV3asNSPOATITbtwrfbwaLJj8h66H1WMIpALCkqsIzK3h7oQ+PdX+LQ9Eg=="
   "resolved" "https://registry.npmjs.org/lilconfig/-/lilconfig-2.0.5.tgz"

@@ -1,5 +1,12 @@
 import { Terrain, World, Snake } from './entity'
-import { KeyDownEventHandler, KeyDownEventPublisher } from './event'
+import {
+  KeyDownEventHandler,
+  KeyDownEventPublisher,
+  SelfCollisionEventHandler,
+  SelfCollisionEventPublisher,
+  WallCollisionEventHandler,
+  WallCollisionEventPublisher,
+} from './event'
 import { KeyDownListener } from './key'
 import { AnimationLoop, StableLoop } from './loop'
 import {
@@ -23,7 +30,10 @@ export class Game {
   private renderLoop: AnimationLoop
   private logicLoop: StableLoop
   private keyDownListener: KeyDownListener
+
   private keyDownEventPublisher: KeyDownEventPublisher
+  private wallCollisionPublisher: WallCollisionEventPublisher
+  private selfCollisionPublisher: SelfCollisionEventPublisher
 
   private world: World
 
@@ -49,7 +59,7 @@ export class Game {
       snake: this.world.getSnake(),
       camera: this.renderProvider.getCamera(),
       canvas: params.canvas,
-      debug: true,
+      debug: false,
     })
     this.renderProvider.registerRenderer(snakeRenderer)
     this.renderProvider.registerRenderer(terrainRenderer)
@@ -62,6 +72,24 @@ export class Game {
     this.keyDownEventPublisher = new KeyDownEventPublisher(this.keyDownListener)
     this.keyDownEventPublisher.registerEventHandler(
       new KeyDownEventHandler(this.world.getSnake())
+    )
+
+    this.wallCollisionPublisher = new WallCollisionEventPublisher(
+      this.world.getTerrain(),
+      this.world.getSnake().getWidth(),
+      snakeRenderer.getSnakeMeshes(),
+      this.logicLoop
+    )
+    this.wallCollisionPublisher.registerEventHandler(
+      new WallCollisionEventHandler(this.renderProvider.getCamera())
+    )
+
+    this.selfCollisionPublisher = new SelfCollisionEventPublisher(
+      this.world.getSnake(),
+      this.logicLoop
+    )
+    this.selfCollisionPublisher.registerEventHandler(
+      new SelfCollisionEventHandler(this.renderProvider.getCamera())
     )
   }
 

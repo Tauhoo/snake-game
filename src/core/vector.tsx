@@ -55,4 +55,8 @@ export class Vector3 {
     this.z /= size
     return this
   }
+
+  public getAmplitude = (): number => {
+    return Math.sqrt(this.x ** 2 + this.y ** 2 + this.z ** 2)
+  }
 }

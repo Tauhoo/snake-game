@@ -62,7 +62,7 @@ export class SnakeRenderer implements Renderer {
     this.snake = snake
     this.scene = scene
     this.material = new THREE.MeshBasicMaterial({ color: 'red' })
-    this.geometry = new THREE.SphereGeometry(snake.getWidth())
+    this.geometry = new THREE.SphereGeometry(snake.getWidth() / 2)
   }
 
   private addMesh = (n: number): void => {
@@ -79,6 +79,10 @@ export class SnakeRenderer implements Renderer {
       if (mesh === undefined) return
       this.scene.remove(mesh)
     }
+  }
+
+  public getSnakeMeshes(): THREE.Mesh[] {
+    return this.meshes
   }
 
   public render = () => {
