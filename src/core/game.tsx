@@ -1,12 +1,13 @@
 import { Terrain, World, Snake } from './entity'
 import {
-  KeyDownEventHandler,
-  KeyDownEventPublisher,
   SelfCollisionEventHandler,
   SelfCollisionEventPublisher,
+} from './event/selfCollision'
+import {
   WallCollisionEventHandler,
   WallCollisionEventPublisher,
-} from './event'
+} from './event/wallColision'
+import { KeyDownEventHandler, KeyDownEventPublisher } from './event/keyDown'
 import { KeyDownListener } from './key'
 import { AnimationLoop, StableLoop } from './loop'
 import {
@@ -15,6 +16,7 @@ import {
   SnakeRenderer,
   TerrainRenderer,
 } from './renderer'
+import { State, StateManager } from './state'
 import { Vector3 } from './vector'
 
 interface GameParams {
@@ -26,6 +28,7 @@ interface GameParams {
 }
 
 export class Game {
+  private stateManager: StateManager
   private renderProvider: RenderProvider
   private renderLoop: AnimationLoop
   private logicLoop: StableLoop
@@ -38,6 +41,7 @@ export class Game {
   private world: World
 
   constructor(params: GameParams) {
+    this.stateManager = new StateManager(State.IN_GAME)
     this.world = this.initWorld()
 
     this.renderProvider = new RenderProvider(
@@ -66,7 +70,10 @@ export class Game {
     this.renderProvider.registerRenderer(cameraRenderer)
 
     this.logicLoop = new StableLoop(params.window, 1000 / params.loopFrequency)
-    this.logicLoop.registerExecuter(this.world.getSnake().forward)
+    this.logicLoop.registerExecuter(() => {
+      if (this.stateManager.getState() === State.IN_GAME)
+        this.world.getSnake().forward()
+    })
 
     this.keyDownListener = new KeyDownListener(params.window)
     this.keyDownEventPublisher = new KeyDownEventPublisher(this.keyDownListener)
@@ -81,7 +88,7 @@ export class Game {
       this.logicLoop
     )
     this.wallCollisionPublisher.registerEventHandler(
-      new WallCollisionEventHandler(this.renderProvider.getCamera())
+      new WallCollisionEventHandler(this.stateManager)
     )
 
     this.selfCollisionPublisher = new SelfCollisionEventPublisher(
@@ -89,7 +96,7 @@ export class Game {
       this.logicLoop
     )
     this.selfCollisionPublisher.registerEventHandler(
-      new SelfCollisionEventHandler(this.renderProvider.getCamera())
+      new SelfCollisionEventHandler(this.stateManager)
     )
   }
 
