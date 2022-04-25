@@ -1,3 +1,4 @@
+import { DirectionalLight, ZeroCurvatureEnding } from 'three'
 import { Snake } from '../entity'
 import { KeyCode, KeyDownListener } from '../key'
 import { Vector3 } from '../vector'
@@ -23,20 +24,27 @@ export class KeyDownEventHandler extends EventHandler {
   }
 
   public execute = (event: KeyDownEvent): void => {
+    const currentDirection = this.snake.getDirection()
+    let currentDirectionInRadius = Math.atan2(
+      currentDirection.z * -1,
+      currentDirection.x
+    )
+
+    const rotationRate = Math.PI / 4
+
     switch (event.getKey()) {
-      case KeyCode.UP:
-        this.snake.setDirection(new Vector3(0, 0, -1))
-        break
       case KeyCode.LEFT:
-        this.snake.setDirection(new Vector3(-1, 0, 0))
+        currentDirectionInRadius += rotationRate
         break
       case KeyCode.RIGHT:
-        this.snake.setDirection(new Vector3(1, 0, 0))
-        break
-      case KeyCode.DOWN:
-        this.snake.setDirection(new Vector3(0, 0, 1))
+        currentDirectionInRadius -= rotationRate
         break
     }
+
+    const z = Math.sin(currentDirectionInRadius) * -1
+    const x = Math.cos(currentDirectionInRadius)
+    const newDirection = new Vector3(x, currentDirection.y, z)
+    currentDirection.setFromVector3(newDirection)
   }
 }
 

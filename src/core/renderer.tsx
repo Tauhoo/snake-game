@@ -140,7 +140,7 @@ export class SnakeRenderer implements Renderer {
       )
     } else if (positions.length - 1 < this.dotConnectorMeshes.length) {
       this.removeDotConnectorMesh(
-        this.dotConnectorMeshes.length - positions.length - 1
+        this.dotConnectorMeshes.length - (positions.length - 1)
       )
     }
 
@@ -237,9 +237,14 @@ export class SnakeCameraRenderer {
     if (!this.debug) {
       const positions = this.snake.getPositions()
       const snakeHeadPosition = positions[0]
-      this.camera.position.x = snakeHeadPosition.x
-      this.camera.position.y = 50
-      this.camera.position.z = snakeHeadPosition.z
+      const newPosition = snakeHeadPosition
+        .copy()
+        .sub(this.snake.getRawDirection().copy().scalarMult(4))
+      newPosition.y = this.snake.getWidth() + 3
+      this.camera.position.x = newPosition.x
+      this.camera.position.y = newPosition.y
+      this.camera.position.z = newPosition.z
+
       this.camera.lookAt(
         new THREE.Vector3(
           snakeHeadPosition.x,

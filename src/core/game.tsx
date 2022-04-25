@@ -69,7 +69,7 @@ export class Game {
       snake: this.world.getSnake(),
       camera: this.renderProvider.getCamera(),
       canvas: params.canvas,
-      debug: true,
+      debug: false,
     })
     const foodRenderer = new FoodRenderer(
       this.world.getFood(),
@@ -130,7 +130,7 @@ export class Game {
       initLength: 5,
       position: new Vector3(0, 0.25, 0),
       width: 0.5,
-      speed: 0.2,
+      speed: 0.1,
     })
     return new World({
       terrain,
