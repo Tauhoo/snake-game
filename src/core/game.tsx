@@ -63,7 +63,7 @@ export class Game {
       snake: this.world.getSnake(),
       camera: this.renderProvider.getCamera(),
       canvas: params.canvas,
-      debug: false,
+      debug: true,
     })
     this.renderProvider.registerRenderer(snakeRenderer)
     this.renderProvider.registerRenderer(terrainRenderer)
@@ -120,6 +120,10 @@ export class Game {
     return this.renderProvider
   }
 
+  public getStateManager(): StateManager {
+    return this.stateManager
+  }
+
   public start = () => {
     this.renderLoop.start()
     this.logicLoop.start()
@@ -130,5 +134,14 @@ export class Game {
     this.renderLoop.destroy()
     this.logicLoop.destroy()
     this.keyDownListener.destroy()
+  }
+
+  public resize = (width: number, height: number) => {
+    this.renderProvider.resize(width, height)
+  }
+
+  public reset = () => {
+    this.world.reset()
+    this.stateManager.setState(State.IN_GAME)
   }
 }

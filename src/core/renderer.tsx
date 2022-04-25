@@ -22,7 +22,10 @@ export class RenderProvider {
   ) {
     this.renderers = []
     this.scene = new THREE.Scene()
-    this.camera = camera === undefined ? new THREE.PerspectiveCamera() : camera
+    this.camera =
+      camera === undefined
+        ? new THREE.PerspectiveCamera(70, width / height)
+        : camera
     this.webGLRenderer = new THREE.WebGLRenderer({ canvas })
     this.webGLRenderer.setSize(width, height)
   }
@@ -48,6 +51,14 @@ export class RenderProvider {
 
   public getWebGLRenderer = (): THREE.WebGLRenderer => {
     return this.webGLRenderer
+  }
+
+  public resize = (width: number, height: number) => {
+    this.camera.aspect = width / height
+    this.camera.updateProjectionMatrix()
+
+    this.webGLRenderer.setSize(width, height)
+    this.webGLRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
   }
 }
 
@@ -165,7 +176,7 @@ export class SnakeCameraRenderer {
       const positions = this.snake.getPositions()
       const snakeHeadPosition = positions[0]
       this.camera.position.x = snakeHeadPosition.x
-      this.camera.position.y = 5
+      this.camera.position.y = 50
       this.camera.position.z = snakeHeadPosition.z
       this.camera.lookAt(
         new Vector3(

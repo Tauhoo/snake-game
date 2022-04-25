@@ -14,6 +14,10 @@ export class World {
     this.terrain = params.terrain
   }
 
+  public reset = () => {
+    this.snake.reset()
+  }
+
   getSnake = (): Snake => {
     return this.snake
   }
@@ -38,6 +42,9 @@ export class Snake {
   private stepSize: number
   private speed: number
   private width: number
+  private initLength: number
+  private initDirection: Vector3
+  private initPosition: Vector3
 
   constructor(params?: SnakeParams) {
     if (params === undefined) params = {}
@@ -53,6 +60,9 @@ export class Snake {
     this.speed = params.speed
     this.stepSize = params.stepSize
     this.direction = params.direction.copy().normalize()
+    this.initDirection = this.direction.copy()
+    this.initLength = params.initLength
+    this.initPosition = params.position.copy()
 
     for (let index = 0; index < params.initLength; index++) {
       const newPosition = params.position
@@ -94,6 +104,18 @@ export class Snake {
 
   public setDirection = (value: Vector3) => {
     this.direction = value.normalize()
+  }
+
+  public reset = () => {
+    this.positions.splice(0, this.initLength)
+    this.direction = this.initDirection.copy()
+    for (let index = 0; index < this.initLength; index++) {
+      const newPosition = this.initPosition
+        .copy()
+        .add(this.direction.copy().scalarMult(index * this.stepSize))
+      this.positions.push(newPosition)
+    }
+    this.positions.reverse()
   }
 
   public forward = () => {

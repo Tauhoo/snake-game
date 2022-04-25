@@ -1,5 +1,4 @@
 export enum State {
-  MENU,
   IN_GAME,
   END_GAME,
 }

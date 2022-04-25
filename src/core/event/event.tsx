@@ -3,6 +3,7 @@ export enum EventCode {
   COLLISION,
   WALL_COLLISION,
   SELF_COLLISION,
+  SCEEN_RESIZE,
 }
 
 export abstract class Event {
