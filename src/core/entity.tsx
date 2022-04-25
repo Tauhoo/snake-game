@@ -87,6 +87,10 @@ export class Snake {
     return this.width
   }
 
+  public getStepSize = (): number => {
+    return this.stepSize
+  }
+
   public getDirection = (): Vector3 => {
     return this.direction
   }

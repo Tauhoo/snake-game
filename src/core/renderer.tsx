@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import { Vector3 } from 'three'
 import { Food, Snake, Terrain } from './entity'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import { Vector3 } from './vector'
 
 interface Renderer {
   render(): void
@@ -68,12 +68,23 @@ export class SnakeRenderer implements Renderer {
   private meshes: THREE.Mesh[] = []
   private material: THREE.MeshBasicMaterial
   private geometry: THREE.SphereGeometry
+  private dotConnectorMeshes: THREE.Mesh[] = []
+  private dotConnectorGeometry: THREE.CylinderGeometry
+  private dotConnectorMaterial: THREE.MeshBasicMaterial
 
   constructor(snake: Snake, scene: THREE.Scene) {
     this.snake = snake
     this.scene = scene
     this.material = new THREE.MeshBasicMaterial({ color: 'red' })
     this.geometry = new THREE.SphereGeometry(snake.getWidth() / 2)
+
+    this.dotConnectorMaterial = new THREE.MeshBasicMaterial({ color: 'blue' })
+    this.dotConnectorGeometry = new THREE.CylinderGeometry(
+      snake.getWidth() / 2,
+      snake.getWidth() / 2,
+      snake.getStepSize(),
+      16
+    )
   }
 
   private addMesh = (n: number): void => {
@@ -81,6 +92,25 @@ export class SnakeRenderer implements Renderer {
       const newMesh = new THREE.Mesh(this.geometry, this.material)
       this.meshes.push(newMesh)
       this.scene.add(newMesh)
+    }
+  }
+
+  private addDotConnectorMesh = (n: number): void => {
+    for (let index = 0; index < n; index++) {
+      const newMesh = new THREE.Mesh(
+        this.dotConnectorGeometry,
+        this.dotConnectorMaterial
+      )
+      this.dotConnectorMeshes.push(newMesh)
+      this.scene.add(newMesh)
+    }
+  }
+
+  private removeDotConnectorMesh = (n: number): void => {
+    for (let index = 0; index < n; index++) {
+      const mesh = this.dotConnectorMeshes.pop()
+      if (mesh === undefined) return
+      this.scene.remove(mesh)
     }
   }
 
@@ -103,11 +133,43 @@ export class SnakeRenderer implements Renderer {
     } else if (positions.length < this.meshes.length) {
       this.removeMesh(this.meshes.length - positions.length)
     }
+
+    if (positions.length - 1 > this.dotConnectorMeshes.length) {
+      this.addDotConnectorMesh(
+        positions.length - 1 - this.dotConnectorMeshes.length
+      )
+    } else if (positions.length - 1 < this.dotConnectorMeshes.length) {
+      this.removeDotConnectorMesh(
+        this.dotConnectorMeshes.length - positions.length - 1
+      )
+    }
+
     for (let index = 0; index < this.meshes.length; index++) {
       this.meshes[index].position.x = positions[index].x
       this.meshes[index].position.y = positions[index].y
       this.meshes[index].position.z = positions[index].z
     }
+
+    for (let index = 0; index < this.dotConnectorMeshes.length; index++) {
+      const headPosition = positions[index]
+      const tailPosition = positions[index + 1]
+      const direction = tailPosition.copy().sub(headPosition)
+      const newPosition = headPosition
+        .copy()
+        .add(direction.copy().scalarMult(0.5))
+
+      this.dotConnectorMeshes[index].position.x = newPosition.x
+      this.dotConnectorMeshes[index].position.y = newPosition.y
+      this.dotConnectorMeshes[index].position.z = newPosition.z
+
+      this.dotConnectorMeshes[index].rotation.x = Math.PI / 2
+      this.dotConnectorMeshes[index].rotation.z =
+        this.calculateDotConnectorLocation(direction)
+    }
+  }
+
+  private calculateDotConnectorLocation = (direction: Vector3): number => {
+    return Math.atan2(direction.z, direction.x) + Math.PI / 2
   }
 }
 
@@ -165,7 +227,7 @@ export class SnakeCameraRenderer {
       this.camera.position.x = 0
       this.camera.position.y = 10
       this.camera.position.z = 0
-      this.camera.lookAt(new Vector3(0, 0, 0))
+      this.camera.lookAt(new THREE.Vector3(0, 0, 0))
     }
     this.control.enabled = debug
     this.debug = debug
@@ -179,7 +241,7 @@ export class SnakeCameraRenderer {
       this.camera.position.y = 50
       this.camera.position.z = snakeHeadPosition.z
       this.camera.lookAt(
-        new Vector3(
+        new THREE.Vector3(
           snakeHeadPosition.x,
           snakeHeadPosition.y,
           snakeHeadPosition.z

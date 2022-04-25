@@ -130,6 +130,7 @@ export class Game {
       initLength: 5,
       position: new Vector3(0, 0.25, 0),
       width: 0.5,
+      speed: 0.2,
     })
     return new World({
       terrain,
