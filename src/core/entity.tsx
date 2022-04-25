@@ -8,14 +8,20 @@ export interface WorldParams {
 export class World {
   private snake: Snake
   private terrain: Terrain
+  private food: Food
 
   constructor(params: WorldParams) {
     this.snake = params.snake
     this.terrain = params.terrain
+    this.food = this.initFood()
   }
 
   public reset = () => {
     this.snake.reset()
+  }
+
+  private initFood = (): Food => {
+    return new Food(0.5, new Vector3(0, 0.25, 0))
   }
 
   getSnake = (): Snake => {
@@ -24,6 +30,10 @@ export class World {
 
   getTerrain = (): Terrain => {
     return this.terrain
+  }
+
+  getFood = (): Food => {
+    return this.food
   }
 }
 
@@ -107,13 +117,14 @@ export class Snake {
   }
 
   public reset = () => {
-    this.positions.splice(0, this.initLength)
+    this.positions.splice(0, this.positions.length - this.initLength)
     this.direction = this.initDirection.copy()
     for (let index = 0; index < this.initLength; index++) {
-      const newPosition = this.initPosition
-        .copy()
-        .add(this.direction.copy().scalarMult(index * this.stepSize))
-      this.positions.push(newPosition)
+      this.positions[index].setFromVector3(
+        this.initPosition
+          .copy()
+          .add(this.direction.copy().scalarMult(index * this.stepSize))
+      )
     }
     this.positions.reverse()
   }
@@ -155,5 +166,26 @@ export class Terrain {
 
   public getHeight = (): number => {
     return this.height
+  }
+}
+
+export class Food {
+  private radius: number
+  private position: Vector3
+  constructor(radius: number, position: Vector3) {
+    this.radius = radius
+    this.position = position
+  }
+
+  public getPosition = (): Vector3 => {
+    return this.position
+  }
+
+  public setPosition = (position: Vector3) => {
+    this.position.setFromVector3(position)
+  }
+
+  public getRadius = (): number => {
+    return this.radius
   }
 }

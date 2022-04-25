@@ -11,6 +11,7 @@ import { KeyDownEventHandler, KeyDownEventPublisher } from './event/keyDown'
 import { KeyDownListener } from './key'
 import { AnimationLoop, StableLoop } from './loop'
 import {
+  FoodRenderer,
   RenderProvider,
   SnakeCameraRenderer,
   SnakeRenderer,
@@ -18,6 +19,10 @@ import {
 } from './renderer'
 import { State, StateManager } from './state'
 import { Vector3 } from './vector'
+import {
+  FoodCollisionEventHandler,
+  FoodCollisionEventPublisher,
+} from './event/foodCollision'
 
 interface GameParams {
   canvas: HTMLCanvasElement
@@ -37,6 +42,7 @@ export class Game {
   private keyDownEventPublisher: KeyDownEventPublisher
   private wallCollisionPublisher: WallCollisionEventPublisher
   private selfCollisionPublisher: SelfCollisionEventPublisher
+  private foodCollisionPublisher: FoodCollisionEventPublisher
 
   private world: World
 
@@ -65,6 +71,12 @@ export class Game {
       canvas: params.canvas,
       debug: true,
     })
+    const foodRenderer = new FoodRenderer(
+      this.world.getFood(),
+      this.renderProvider.getScene()
+    )
+
+    this.renderProvider.registerRenderer(foodRenderer)
     this.renderProvider.registerRenderer(snakeRenderer)
     this.renderProvider.registerRenderer(terrainRenderer)
     this.renderProvider.registerRenderer(cameraRenderer)
@@ -97,6 +109,15 @@ export class Game {
     )
     this.selfCollisionPublisher.registerEventHandler(
       new SelfCollisionEventHandler(this.stateManager)
+    )
+
+    this.foodCollisionPublisher = new FoodCollisionEventPublisher(
+      this.world.getSnake(),
+      this.world.getFood(),
+      this.logicLoop
+    )
+    this.foodCollisionPublisher.registerEventHandler(
+      new FoodCollisionEventHandler(this.world.getSnake())
     )
   }
 

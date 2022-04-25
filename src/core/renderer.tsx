@@ -1,6 +1,6 @@
 import * as THREE from 'three'
 import { Vector3 } from 'three'
-import { Snake, Terrain } from './entity'
+import { Food, Snake, Terrain } from './entity'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 interface Renderer {
@@ -186,5 +186,27 @@ export class SnakeCameraRenderer {
         )
       )
     }
+  }
+}
+
+export class FoodRenderer implements Renderer {
+  private mesh: THREE.Mesh
+  private food: Food
+  private scene: THREE.Scene
+  constructor(food: Food, scene: THREE.Scene) {
+    this.mesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.25, 16, 16),
+      new THREE.MeshBasicMaterial({ color: 'yellow' })
+    )
+    this.food = food
+    this.scene = scene
+    this.scene.add(this.mesh)
+  }
+
+  render(): void {
+    const position = this.food.getPosition()
+    this.mesh.position.x = position.x
+    this.mesh.position.y = position.y
+    this.mesh.position.z = position.z
   }
 }
