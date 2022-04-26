@@ -17,6 +17,7 @@ export class KeyDownListener {
 
   private onKeyDown = (event: KeyboardEvent) => {
     let key = KeyCode.None
+
     switch (event.key) {
       case 'w':
       case 'ArrowUp':
