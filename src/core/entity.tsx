@@ -86,6 +86,10 @@ export class Snake {
     this.positions.reverse()
   }
 
+  public getInitLength = (): number => {
+    return this.initLength
+  }
+
   public getWidth = (): number => {
     return this.width
   }

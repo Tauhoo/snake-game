@@ -33,6 +33,7 @@ const PanelContainer = styled.div`
 interface summaryProps {
   enable: boolean
   setState: (state: State) => void
+  score: number
 }
 
 const Summary = (props: summaryProps) => {
@@ -40,6 +41,8 @@ const Summary = (props: summaryProps) => {
     <Container enable={props.enable}>
       <PanelContainer>
         <h1>Game Over</h1>
+        <br />
+        <h2>Score : {props.score}</h2>
         <br />
         <Button onClick={() => props.setState(State.IN_GAME)}>Try again</Button>
         <br />

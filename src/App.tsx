@@ -10,6 +10,7 @@ function App() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [state, setState] = useState<State>(State.PRE_GAME)
   const [loading, setLoading] = useState<boolean>(true)
+  const [score, setScore] = useState<number>(0)
 
   const onResize = () => {
     console.log(window.innerHeight, window.innerWidth)
@@ -17,6 +18,7 @@ function App() {
   }
 
   const onChangeGameState = (state: State): void => {
+    if (gameRef.current !== null) setScore(gameRef.current.getScore())
     setState(state)
   }
 
@@ -46,9 +48,9 @@ function App() {
   }, [])
 
   const onSetState = (state: State) => {
-    if (gameRef === null) return
+    if (gameRef.current === null) return
     setState(state)
-    gameRef.current?.getStateManager().setState(state)
+    gameRef.current.getStateManager().setState(state)
   }
 
   return (
@@ -61,6 +63,7 @@ function App() {
         <Summary
           enable={state === State.END_GAME}
           setState={onSetState}
+          score={score}
         ></Summary>
       )}
     </div>

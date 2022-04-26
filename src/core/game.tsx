@@ -148,6 +148,11 @@ export class Game {
     })
   }
 
+  public getScore = (): number => {
+    const snake = this.world.getSnake()
+    return snake.getPositions().length - snake.getInitLength()
+  }
+
   public getRenderProvider = (): RenderProvider => {
     return this.renderProvider
   }
