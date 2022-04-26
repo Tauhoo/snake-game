@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import { Food, Snake, Terrain } from './entity'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { Vector3 } from './vector'
+import { Mesh } from 'three'
 
 interface Renderer {
   render(): void
@@ -191,7 +192,37 @@ export class TerrainRenderer {
       new THREE.MeshBasicMaterial({ color: 'green' })
     )
     this.floorMesh.rotation.x = -Math.PI / 2
+
     this.scene.add(this.floorMesh)
+
+    this.setupWalls()
+  }
+
+  private setupWalls = () => {
+    const material = new THREE.MeshBasicMaterial({ color: 'gray' })
+    const height = 5
+    const frontWidth = this.terrain.getWidth()
+    const sideWidth = this.terrain.getHeight()
+    const frontWallGeometry = new THREE.PlaneGeometry(frontWidth, height)
+    const sideWallGeometry = new THREE.PlaneGeometry(sideWidth, height)
+
+    const frontMesh = new Mesh(frontWallGeometry, material)
+    frontMesh.position.y = height / 2
+    frontMesh.position.z = sideWidth / 2
+    frontMesh.rotation.y = Math.PI
+    const backMesh = new Mesh(frontWallGeometry, material)
+    backMesh.position.y = height / 2
+    backMesh.position.z = (sideWidth / 2) * -1
+    const leftMesh = new Mesh(sideWallGeometry, material)
+    leftMesh.position.y = height / 2
+    leftMesh.rotation.y = Math.PI / 2
+    leftMesh.position.x = (frontWidth / 2) * -1
+    const rightMesh = new Mesh(sideWallGeometry, material)
+    rightMesh.position.y = height / 2
+    rightMesh.rotation.y = (Math.PI / 2) * -1
+    rightMesh.position.x = frontWidth / 2
+
+    this.scene.add(frontMesh, backMesh, leftMesh, rightMesh)
   }
 
   render = () => {}
