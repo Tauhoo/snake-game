@@ -1,8 +1,7 @@
 import { EventCode, Event, EventHandler, EventPublisher } from './event'
 import { Vector3 } from '../vector'
-import { Food, Snake, Terrain, World } from '../entity'
+import { Food, Snake, World } from '../entity'
 import { StableLoop } from '../loop'
-import { State, StateManager } from '../state'
 
 export class FoodCollisionEvent extends Event {
   constructor() {
