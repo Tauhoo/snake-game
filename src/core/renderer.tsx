@@ -272,6 +272,8 @@ export class FoodRenderer implements Renderer {
 
   render(): void {
     const position = this.food.getPosition()
+    console.log('DEBUG : position', position.x, position.y, position.z)
+
     this.mesh.position.x = position.x
     this.mesh.position.y = position.y
     this.mesh.position.z = position.z

@@ -18,6 +18,7 @@ export class World {
 
   public reset = () => {
     this.snake.reset()
+    this.food.reset()
   }
 
   private initFood = (): Food => {
@@ -55,6 +56,7 @@ export class Snake {
   private initLength: number
   private initDirection: Vector3
   private initPosition: Vector3
+  private initSpeed: number
 
   constructor(params?: SnakeParams) {
     if (params === undefined) params = {}
@@ -73,6 +75,7 @@ export class Snake {
     this.initDirection = this.direction.copy()
     this.initLength = params.initLength
     this.initPosition = params.position.copy()
+    this.initSpeed = params.speed
 
     for (let index = 0; index < params.initLength; index++) {
       const newPosition = params.position
@@ -120,7 +123,16 @@ export class Snake {
     this.direction = value.normalize()
   }
 
+  public setSpeed = (speed: number) => {
+    this.speed = speed
+  }
+
+  public getSpeed = (): number => {
+    return this.speed
+  }
+
   public reset = () => {
+    this.speed = this.initSpeed
     this.positions.splice(0, this.positions.length - this.initLength)
     this.direction = this.initDirection.copy()
     for (let index = 0; index < this.initLength; index++) {
@@ -176,9 +188,15 @@ export class Terrain {
 export class Food {
   private radius: number
   private position: Vector3
+  private initPosition: Vector3
   constructor(radius: number, position: Vector3) {
     this.radius = radius
     this.position = position
+    this.initPosition = position.copy()
+  }
+
+  public reset = () => {
+    this.position.setFromVector3(this.initPosition)
   }
 
   public getPosition = (): Vector3 => {

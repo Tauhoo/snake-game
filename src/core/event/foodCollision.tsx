@@ -1,6 +1,6 @@
 import { EventCode, Event, EventHandler, EventPublisher } from './event'
 import { Vector3 } from '../vector'
-import { Food, Snake } from '../entity'
+import { Food, Snake, Terrain, World } from '../entity'
 import { StableLoop } from '../loop'
 import { State, StateManager } from '../state'
 
@@ -37,13 +37,27 @@ export class FoodCollisionEventPublisher extends EventPublisher {
 }
 
 export class FoodCollisionEventHandler extends EventHandler {
-  private snake: Snake
-  constructor(snake: Snake) {
+  private world: World
+  constructor(world: World) {
     super(EventCode.FOOD_COLLISION)
-    this.snake = snake
+    this.world = world
   }
 
-  public execute = (event: FoodCollisionEvent): void => {
-    this.snake.eat()
+  public execute = (_: FoodCollisionEvent): void => {
+    const terrain = this.world.getTerrain()
+    const width = terrain.getWidth()
+    const height = terrain.getHeight()
+    const food = this.world.getFood()
+    const snake = this.world.getSnake()
+    food.setPosition(
+      new Vector3(
+        Math.random() * width - width / 2,
+        food.getPosition().y,
+        Math.random() * height - height / 2
+      )
+    )
+
+    snake.setSpeed(snake.getSpeed() * 1.2)
+    this.world.getSnake().eat()
   }
 }
