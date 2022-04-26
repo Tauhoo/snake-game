@@ -30,21 +30,23 @@ const PanelContainer = styled.div`
   padding: 25px;
 `
 
-interface menuProps {
+interface summaryProps {
   enable: boolean
   setState: (state: State) => void
 }
 
-const menu = (props: menuProps) => {
+const Summary = (props: summaryProps) => {
   return (
     <Container enable={props.enable}>
       <PanelContainer>
-        <h1>Snake Game</h1>
+        <h1>Game Over</h1>
         <br />
-        <Button onClick={() => props.setState(State.IN_GAME)}>Start</Button>
+        <Button onClick={() => props.setState(State.IN_GAME)}>Try again</Button>
+        <br />
+        <Button onClick={() => props.setState(State.PRE_GAME)}>Back</Button>
       </PanelContainer>
     </Container>
   )
 }
 
-export default menu
+export default Summary

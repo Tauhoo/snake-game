@@ -5,6 +5,7 @@ export enum EventCode {
   SELF_COLLISION,
   SCEEN_RESIZE,
   FOOD_COLLISION,
+  STATE_CHANGE,
 }
 
 export abstract class Event {

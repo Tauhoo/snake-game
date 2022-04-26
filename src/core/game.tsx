@@ -23,6 +23,10 @@ import {
   FoodCollisionEventHandler,
   FoodCollisionEventPublisher,
 } from './event/foodCollision'
+import {
+  StateChangeEventHandler,
+  StateChangeEventPublisher,
+} from './event/state'
 
 interface GameParams {
   canvas: HTMLCanvasElement
@@ -43,11 +47,12 @@ export class Game {
   private wallCollisionPublisher: WallCollisionEventPublisher
   private selfCollisionPublisher: SelfCollisionEventPublisher
   private foodCollisionPublisher: FoodCollisionEventPublisher
+  private stateChangePublisher: StateChangeEventPublisher
 
   private world: World
 
   constructor(params: GameParams) {
-    this.stateManager = new StateManager(State.IN_GAME)
+    this.stateManager = new StateManager(State.PRE_GAME)
     this.world = this.initWorld()
 
     this.renderProvider = new RenderProvider(
@@ -119,6 +124,11 @@ export class Game {
     this.foodCollisionPublisher.registerEventHandler(
       new FoodCollisionEventHandler(this.world.getSnake())
     )
+
+    this.stateChangePublisher = new StateChangeEventPublisher(this.stateManager)
+    this.stateChangePublisher.registerEventHandler(
+      new StateChangeEventHandler(this.world)
+    )
   }
 
   private initWorld = (): World => {
@@ -160,10 +170,5 @@ export class Game {
 
   public resize = (width: number, height: number) => {
     this.renderProvider.resize(width, height)
-  }
-
-  public reset = () => {
-    this.world.reset()
-    this.stateManager.setState(State.IN_GAME)
   }
 }

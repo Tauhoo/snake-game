@@ -3,11 +3,13 @@ import { useEffect, useRef, useState } from 'react'
 import { Game } from './core/game'
 import { State } from './core/state'
 import Menu from './components/Menu'
+import Summary from './components/Summary'
 
 function App() {
   const gameRef = useRef<Game | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [state, setState] = useState(State.IN_GAME)
+  const [state, setState] = useState<State>(State.PRE_GAME)
+  const [loading, setLoading] = useState<boolean>(true)
 
   const onResize = () => {
     console.log(window.innerHeight, window.innerWidth)
@@ -35,17 +37,31 @@ function App() {
     gameRef.current = game
 
     window.addEventListener('resize', onResize)
+    setLoading(false)
     return () => {
       if (gameRef.current === null) return
       gameRef.current.destroy()
       window.removeEventListener('resize', onResize)
     }
   }, [])
+
+  const onSetState = (state: State) => {
+    if (gameRef === null) return
+    setState(state)
+    gameRef.current?.getStateManager().setState(state)
+  }
+
   return (
     <div className='App'>
       <canvas ref={canvasRef}></canvas>
-      {gameRef.current !== null && (
-        <Menu game={gameRef.current} enable={state === State.END_GAME}></Menu>
+      {!loading && (
+        <Menu enable={state === State.PRE_GAME} setState={onSetState}></Menu>
+      )}
+      {!loading && (
+        <Summary
+          enable={state === State.END_GAME}
+          setState={onSetState}
+        ></Summary>
       )}
     </div>
   )
