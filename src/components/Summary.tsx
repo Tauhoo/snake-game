@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { Game } from '../core/game'
 import { State } from '../core/state'
 import Button from './Button'
 
