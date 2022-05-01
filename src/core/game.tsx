@@ -122,7 +122,7 @@ export class Game {
       this.logicLoop
     )
     this.foodCollisionPublisher.registerEventHandler(
-      new FoodCollisionEventHandler(this.world)
+      new FoodCollisionEventHandler(this.world, 2)
     )
 
     this.stateChangePublisher = new StateChangeEventPublisher(this.stateManager)

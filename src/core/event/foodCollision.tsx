@@ -37,9 +37,11 @@ export class FoodCollisionEventPublisher extends EventPublisher {
 
 export class FoodCollisionEventHandler extends EventHandler {
   private world: World
-  constructor(world: World) {
+  private padding: number
+  constructor(world: World, padding: number) {
     super(EventCode.FOOD_COLLISION)
     this.world = world
+    this.padding = padding
   }
 
   public execute = (_: FoodCollisionEvent): void => {
@@ -48,11 +50,13 @@ export class FoodCollisionEventHandler extends EventHandler {
     const height = terrain.getHeight()
     const food = this.world.getFood()
     const snake = this.world.getSnake()
+    const paddedHeight = height - this.padding * 2
+    const paddedWidth = width - this.padding * 2
     food.setPosition(
       new Vector3(
-        Math.random() * width - width / 2,
+        Math.random() * paddedWidth - paddedWidth / 2,
         food.getPosition().y,
-        Math.random() * height - height / 2
+        Math.random() * paddedHeight - paddedHeight / 2
       )
     )
 
