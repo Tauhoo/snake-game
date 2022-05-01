@@ -1,4 +1,3 @@
-import { DirectionalLight, ZeroCurvatureEnding } from 'three'
 import { Snake } from '../entity'
 import { KeyCode, KeyDownListener } from '../key'
 import { Vector3 } from '../vector'

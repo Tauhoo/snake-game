@@ -1,7 +1,5 @@
 import { EventCode, Event, EventHandler, EventPublisher } from './event'
-import { Vector3 } from '../vector'
-import { Snake, World } from '../entity'
-import { StableLoop } from '../loop'
+import { World } from '../entity'
 import { State, StateManager } from '../state'
 
 export class StateChangeEvent extends Event {
